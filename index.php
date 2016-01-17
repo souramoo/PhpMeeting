@@ -73,7 +73,7 @@ if ($handle) {
     if(strcmp("", trim($location)) != 0) $table .= "<i>Location: " . $location . "</i><br />";
     $table .= "<i>Created on " . date('d/m/Y', $created) . ($expires == 0 ? "" : ", expires on " . date('d/m/Y', $expires)) . "</i>".($expired? "<br /><b>(Has now expired. Opening read-only)</b>": "")."<br /><br />";
 
-    $table .= '<table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="width:20%">Name</th>';
+    $table .= '<table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="width:20%; text-align: center">Name</th>';
     $totals = array();
     $options = explode("|", $init);
     foreach($options as $date) {
