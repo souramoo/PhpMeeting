@@ -16,6 +16,7 @@ if(isset($_POST['data'])) {
         $location = fgetss($handle);
         $created = fgetss($handle) + 0;
         $expires = fgetss($handle) + 0;
+        $majcat = fgets($handle);
         $init = fgets($handle);
         fclose($handle);
         if($expires > 0 && time() > $expires) {
@@ -59,11 +60,12 @@ $handle = fopen($file, "r");
 $table = "";
 $title = "";
 if ($handle) {
-    $title = base64_decode(fgetss($handle));
-    $author = base64_decode(fgetss($handle));
-    $location = base64_decode(fgetss($handle));
+    $title = strip_tags(base64_decode(fgets($handle)));
+    $author = strip_tags(base64_decode(fgets($handle)));
+    $location = strip_tags(base64_decode(fgets($handle)));
     $created = fgetss($handle) + 0;
     $expires = fgetss($handle) + 0;
+    $majcat = fgets($handle);
     $init = fgets($handle);
 
     $expired = ($expires == 0 ? false : (time() > $expires ? true : false));
@@ -73,18 +75,28 @@ if ($handle) {
     if(strcmp("", trim($location)) != 0) $table .= "<i>Location: " . $location . "</i><br />";
     $table .= "<i>Created on " . date('d/m/Y', $created) . ($expires == 0 ? "" : ", expires on " . date('d/m/Y', $expires)) . "</i>".($expired? "<br /><b>(Has now expired. Opening read-only)</b>": "")."<br /><br />";
 
-    $table .= '<table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="width:20%; text-align: center">Name</th>';
+    $table .= '<div id="twrap"><table class="table table-hover table-bordered"><thead class="thead-inverse"><tr>';
+    $rowcnt = 0;
+    foreach(explode("|", $majcat) as $date) {
+        if(strcmp("", trim($date)) == 0)
+            $rowcnt++;
+        else {
+            $table .= '<th rowspan="'.$rowcnt.'">'.strip_tags(base64_decode($date)).'</th>';
+            $rowcnt = 0;
+       }
+    }
+    $table .= '</tr><tr>';
     $totals = array();
     $options = explode("|", $init);
     foreach($options as $date) {
-        $table .= "<th>" . base64_decode($date) . "</th>";
+        $table .= "<th>" . strip_tags(base64_decode($date)) . "</th>";
         $totals[] = array(0, 0);
     }
     $table .= "</tr></thead><tbody>";
     // Show current entries
     while (($line = fgets($handle)) !== false) {
         $stats = explode("|", $line);
-        $table .= "<tr><td><p>" . base64_decode($stats[0]) . "</p></td>";
+        $table .= "<tr><td><p>" . strip_tags(base64_decode($stats[0])) . "</p></td>";
         array_shift($stats);
         for($i = 0; $i < count($stats); $i++) {
             $mode = $stats[$i] + 0;
@@ -124,7 +136,7 @@ if ($handle) {
             $table .= "</b>";
         $table .= "</td>";
     }
-    $table .= "</tr></tbody></table><br />";
+    $table .= "</tr></tbody></table></div><br />";
     if(!$expired)
         $table .= "<div id=\"saver\"><button class=\"btn btn-default\" type=\"button\" id=\"cantmake\">Cannot make it</button><button class=\"btn btn-info\" type=\"button\" id=\"save\">Save!</button></div>";
     fclose($handle);
@@ -161,8 +173,14 @@ text-align: right;
 button {
 margin-left: 10px;
 }
-td {
-width: 50px;
+table {
+table-layout: fixed;
+}
+th {
+width: 90px;
+}
+#twrap {
+
 }
 </style>
 
@@ -286,6 +304,9 @@ function sendform() {
   </head>
   <body>
     <div class="container" style="margin-top: 70px; margin-bottom: 50px;">
+<noscript>
+    <div class="alert alert-info" role="alert">Please enable <b>Javascript</b> to use this form.</div>
+</noscript>
 <?php
     if(isset($_SESSION['msg'])) {
         echo '<div id="msgsuc" class="alert alert-'.$_SESSION['msgtype'].'" role="alert">' . $_SESSION['msg'] . "</div>";
