@@ -3,6 +3,7 @@ $file = $_GET['file'];
 $file = "polls/1";
 
 $notif = "";
+$notiftype = "info";
 
 session_start();
 
@@ -18,7 +19,8 @@ if(isset($_POST['data'])) {
         $init = fgets($handle);
         fclose($handle);
         if($expires > 0 && time() > $expires) {
-            $notif = "<b>Error</b> This poll has expired, we can no longer update it.";
+            $notif = "<b>Sorry!</b> This poll has expired, we can no longer update it.";
+            $notiftype = "info";
         } else {
             $cnt = count(explode("|", $init));
 
@@ -38,14 +40,18 @@ if(isset($_POST['data'])) {
                 fwrite($handle, $newline . "\n");
                 fclose($handle);
                 $notif = "<b>Thanks!</b> Your submission has been saved";
+                $notiftype = "success";
             } else {
                 $notif = "<b>Error</b> Writing to file. Please let the admins know!";
+                $notiftype = "danger";
             }
         }
     } else {
         $notif = "<b>Error</b> Reading file. Please let the admins know!";
+        $notiftype = "danger";
     }
 $_SESSION["msg"] = $notif;
+$_SESSION["msgtype"] = $notiftype;
 die($notif);
 }
 
@@ -278,8 +284,9 @@ function sendform() {
     <div class="container" style="margin-top: 70px; margin-bottom: 50px;">
 <?php
     if(isset($_SESSION['msg'])) {
-        echo '<div id="msgsuc" class="alert alert-info" role="alert">' . $_SESSION['msg'] . "</div>";
+        echo '<div id="msgsuc" class="alert alert-'.$_SESSION['msgtype'].'" role="alert">' . $_SESSION['msg'] . "</div>";
         unset($_SESSION['msg']);
+        unset($_SESSION['msgtype']);
     }
 
     echo $table;
