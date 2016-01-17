@@ -75,13 +75,13 @@ if ($handle) {
     if(strcmp("", trim($location)) != 0) $table .= "<i>Location: " . $location . "</i><br />";
     $table .= "<i>Created on " . date('d/m/Y', $created) . ($expires == 0 ? "" : ", expires on " . date('d/m/Y', $expires)) . "</i>".($expired? "<br /><b>(Has now expired. Opening read-only)</b>": "")."<br /><br />";
 
-    $table .= '<div id="twrap"><table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="text-align: center;" rowspan="2">Name</th>';
+    $table .= '<div id="twrap"><table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="text-align: center;width:150px;" rowspan="2">Name</th>';
     $rowcnt = 1;
     foreach(explode("|", $majcat) as $date) {
         if(strcmp("", trim($date)) == 0)
             $rowcnt++;
         else {
-            $table .= '<th colspan="'.$rowcnt.'">'.strip_tags(base64_decode($date)).'</th>';
+            $table .= '<th colspan="'.$rowcnt.'" style="width: '.($rowcnt*90).'px">'.strip_tags(base64_decode($date)).'</th>';
             $rowcnt = 1;
         }
     }
@@ -183,6 +183,9 @@ width: 90px;
 }
 #twrap {
 
+}
+th {
+text-align: center;
 }
 </style>
 
