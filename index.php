@@ -4,6 +4,8 @@ $file = "polls/1";
 
 $notif = "";
 
+session_start();
+
 if(isset($_POST['data'])) {
     $handle = fopen($file, "r");
     if ($handle) {
@@ -15,32 +17,35 @@ if(isset($_POST['data'])) {
         $expires = fgetss($handle) + 0;
         $init = fgets($handle);
         fclose($handle);
-
-        $cnt = count(explode("|", $init));
-
-        $data = json_decode($_POST['data'], true);
-
-        $newline = base64_encode(strip_tags(trim(preg_replace('/\s\s+/', ' ', $data["name"]))));
-        for($i=0;  $i < $cnt; $i++){
-            $val = 0;
-            if($data[$i] == 1) $val = 1;
-            if($data[$i] == 2) $val = 2;
-            $newline .= "|".$val;
-        }
-
-        $handle = fopen($file, "a");
-
-        if ($handle) {
-            fwrite($handle, $newline . "\n");
-            fclose($handle);
-            $notif = "Thanks! Saved your submission.";
+        if($expires > 0 && time() > $expires) {
+            $notif = "<b>Error</b> This poll has expired, we can no longer update it.";
         } else {
-            $notif = "Error writing file.";
-        }
+            $cnt = count(explode("|", $init));
 
+            $data = json_decode($_POST['data'], true);
+
+            $newline = base64_encode(strip_tags(trim(preg_replace('/\s\s+/', ' ', $data["name"]))));
+            for($i=0;  $i < $cnt; $i++){
+                $val = 0;
+                if($data[$i] == 1) $val = 1;
+                if($data[$i] == 2) $val = 2;
+                $newline .= "|".$val;
+            }
+
+            $handle = fopen($file, "a");
+
+            if ($handle) {
+                fwrite($handle, $newline . "\n");
+                fclose($handle);
+                $notif = "<b>Thanks!</b> Your submission has been saved";
+            } else {
+                $notif = "<b>Error</b> Writing to file. Please let the admins know!";
+            }
+        }
     } else {
-        $notif = "Error reading file";
+        $notif = "<b>Error</b> Reading file. Please let the admins know!";
     }
+$_SESSION["msg"] = $notif;
 die($notif);
 }
 
@@ -192,8 +197,15 @@ function updateCantMake(){
 
 $(document).ready(function(){
 
-  $("#name").keyup(updateCantMake)
+  $("#name").keyup(function(e){
+     updateCantMake();
+     if (e.keyCode == 13) {
+         sendform()
+     }
+  })
   updateCantMake();
+
+  setTimeout(function(){$("#msgsuc").slideUp()}, 2000);
 
   $(".tot").each(function(){
       $(this).data("yes", $(this).data("orig-yes"))
@@ -256,7 +268,7 @@ function sendform() {
         if(o == "warning") op = 2
         submit[$(this).parent().data("option")] = op
     })
-    $.post(window.location.href, {"data": JSON.stringify(submit)}, function(){$("#name")[0].value= ""; window.location.reload();});
+    $.post(window.location.href, {"data": JSON.stringify(submit)}, function(res){$("#name")[0].value= ""; window.location.reload(true);});
     $("#save").prop("disabled", true)
     $("#cantmake").prop("disabled", true)
 }
@@ -264,8 +276,12 @@ function sendform() {
   </head>
   <body>
     <div class="container" style="margin-top: 70px; margin-bottom: 50px;">
-
 <?php
+    if(isset($_SESSION['msg'])) {
+        echo '<div id="msgsuc" class="alert alert-info" role="alert">' . $_SESSION['msg'] . "</div>";
+        unset($_SESSION['msg']);
+    }
+
     echo $table;
 ?>
 
