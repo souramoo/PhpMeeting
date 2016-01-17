@@ -66,10 +66,12 @@ if ($handle) {
     $expires = fgetss($handle) + 0;
     $init = fgets($handle);
 
+    $expired = ($expires == 0 ? false : (time() > $expires ? true : false));
+
     $table .= "<h1>" . $title . "</h1>";
     $table .= "<i>By " . $author . "</i><br />";
     if(strcmp("", trim($location)) != 0) $table .= "<i>Location: " . $location . "</i><br />";
-    $table .= "<i>Created on " . date('d/m/Y', $created) . ($expires == 0 ? "" : ", expires on " . date('d/m/Y', $expires)) . "</i><br /><br />";
+    $table .= "<i>Created on " . date('d/m/Y', $created) . ($expires == 0 ? "" : ", expires on " . date('d/m/Y', $expires)) . "</i>".($expired? "<br /><b>(Has now expired. Opening read-only)</b>": "")."<br /><br />";
 
     $table .= '<table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="width:20%">Name</th>';
     $totals = array();
@@ -99,7 +101,7 @@ if ($handle) {
         $table .= "</tr>";
     }
     // add in a new entry
-    $table .= "<tr><td><input id=\"name\" class=\"form-control\" placeholder=\"Your name here...\" /></td>";
+    $table .= "<tr ".($expired?"style=\"display: none\"":"")."><td><input id=\"name\" class=\"form-control\" placeholder=\"Your name here...\" /></td>";
     for($i = 0; $i < count($options); $i++) {
         $table .= "<td style=\"text-align:center;\" data-option=\"".$i."\">" . "<a class=\"ynm\" href=\"#\">Yes</a><br /><a class=\"ynm\" href=\"#\">(Yes)</a><br /><a class=\"ynm\" href=\"#\">No</a>" . "</td>";
     }
@@ -122,7 +124,9 @@ if ($handle) {
             $table .= "</b>";
         $table .= "</td>";
     }
-    $table .= "</tr></tbody></table><br /><div id=\"saver\"><button class=\"btn btn-default\" type=\"button\" id=\"cantmake\">Cannot make it</button><button class=\"btn btn-info\" type=\"button\" id=\"save\">Save!</button></div>";
+    $table .= "</tr></tbody></table><br />";
+    if(!$expired)
+        $table .= "<div id=\"saver\"><button class=\"btn btn-default\" type=\"button\" id=\"cantmake\">Cannot make it</button><button class=\"btn btn-info\" type=\"button\" id=\"save\">Save!</button></div>";
     fclose($handle);
 } else {
     $table = "Error opening file";
