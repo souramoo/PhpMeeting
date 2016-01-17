@@ -75,7 +75,7 @@ if ($handle) {
     if(strcmp("", trim($location)) != 0) $table .= "<i>Location: " . $location . "</i><br />";
     $table .= "<i>Created on " . date('d/m/Y', $created) . ($expires == 0 ? "" : ", expires on " . date('d/m/Y', $expires)) . "</i>".($expired? "<br /><b>(Has now expired. Opening read-only)</b>": "")."<br /><br />";
 
-    $table .= '<div id="twrap"><table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="" rowspan="2">Name</th>';
+    $table .= '<div id="twrap"><table class="table table-hover table-bordered"><thead class="thead-inverse"><tr><th style="text-align: center;" rowspan="2">Name</th>';
     $rowcnt = 1;
     foreach(explode("|", $majcat) as $date) {
         if(strcmp("", trim($date)) == 0)
@@ -85,7 +85,7 @@ if ($handle) {
             $rowcnt = 1;
         }
     }
-    $table .= '</tr><tr>';
+    $table .= '</tr><tr class="constrow">';
     $totals = array();
     $options = explode("|", $init);
     foreach($options as $date) {
@@ -174,9 +174,11 @@ button {
 margin-left: 10px;
 }
 table {
-/*table-layout: fixed;*/
+table-layout: fixed;
+word-wrap: break-word;
+overflow-wrap: break-word;
 }
-th {
+tr.constrow th {
 width: 90px;
 }
 #twrap {
