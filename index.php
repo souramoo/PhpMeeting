@@ -225,6 +225,7 @@ function updateCantMake(){
         $("#cantmake").prop("disabled", true)
     } else {
         $("#save").prop("disabled", false)
+        $("#cantmake").prop("disabled", false)
     }
 }
 
