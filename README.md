@@ -2,8 +2,21 @@
 
 A simple doodle.com clone polling script! Demo available at https://sm2030.user.srcf.met/poll/
 
-![image](https://user-images.githubusercontent.com/11202149/114603678-ef102080-9c8f-11eb-912c-574ef67854eb.png)
+## Features
 
-To create your own poll, replace the contents of `polls/1` with the generated output from the poll generator at https://codepen.io/souramoo/full/VwPXLoQ
+- Simple
+- Flat-file data storage
+
+## Screenshots
+
+![image](https://user-images.githubusercontent.com/11202149/114603824-16ff8400-9c90-11eb-80d2-0f928905d846.png)
+
+![image](https://user-images.githubusercontent.com/11202149/114603791-0e0eb280-9c90-11eb-88ca-f9567d4f22fb.png)
+
+## Usage
+
+To create your own poll, replace the contents of `polls/1` with the output from the poll editor at https://codepen.io/souramoo/full/VwPXLoQ and upload this literally anywhere supporting PHP. All responses are stored in a flat-file way to make sure `polls/1` is writeable and you're off!
+
+## More help
 
 Contact me for more help!
