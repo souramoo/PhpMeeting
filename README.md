@@ -1,6 +1,6 @@
 # PhpMeeting
 
-A simple doodle.com clone polling script! Demo available at https://sm2030.user.srcf.met/poll/
+A simple doodle.com clone polling script! Demo available at https://sm2030.user.srcf.net/poll/
 
 ## Features
 
