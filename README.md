@@ -6,6 +6,7 @@ A simple doodle.com clone polling script! Demo available at https://sm2030.user.
 
 - Simple
 - Flat-file data storage
+- Polls can be set to expire (after which they will become read-only)
 
 ## Screenshots
 
