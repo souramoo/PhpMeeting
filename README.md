@@ -16,7 +16,10 @@ A simple doodle.com clone polling script! Demo available at https://sm2030.user.
 
 ## Usage
 
-To create your own poll, replace the contents of `polls/1` with the output from the poll editor at https://codepen.io/souramoo/full/VwPXLoQ and upload this literally anywhere supporting PHP. All responses are stored in a flat-file way to make sure `polls/1` is writeable and you're off!
+To create your own poll:
+1. Use the poll editor at https://codepen.io/souramoo/full/VwPXLoQ to set the details
+1. Replace the contents of `polls/1` with the output from the poll editor
+1. Upload this literally anywhere supporting PHP. All responses are stored in a flat-file way to make sure `polls/1` is writeable and you're off!
 
 ## More help
 
