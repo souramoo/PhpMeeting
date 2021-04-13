@@ -182,7 +182,8 @@ tr.constrow th {
 width: 90px;
 }
 #twrap {
-
+width: fit-content;
+padding-right: 15px;
 }
 th {
 text-align: center;
